@@ -5,10 +5,10 @@ from skimage.feature import greycoprops, greycomatrix
 def calu_lbp(image, size):
     [y,x] = np.shape(image)
     r = 3
-    points = 8*3
+    points = 3*8
     lbp = local_binary_pattern(image, points, r, 'uniform')
     # print 'max Diff is ',np.max(lbp)-np.min(lbp)
-    hists = np.histogram(lbp, size*size)
+    hists = np.histogram(lbp, size)
 
     allSum = np.sum(hists[0][0:-2])
     energy = []
@@ -55,7 +55,10 @@ def calu_glcm_feature(image):
     min_value = np.min(image)
     if min_value < 0:
         image -= min_value
-    glcm_matrixs = greycomatrix(image, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [0, np.pi / 8, np.pi / 4, 3 * np.pi / 8, np.pi / 2, 5 * np.pi / 8, 3 * np.pi / 4, 7 * np.pi / 8], levels=255)
+    glcm_matrixs = greycomatrix(image,
+                                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                                [0, np.pi / 8, np.pi / 4, 3 * np.pi / 8, np.pi / 2, 5 * np.pi / 8, 3 * np.pi / 4, 7 * np.pi / 8],
+                                levels=255)
 
     contrast_matrixs = greycoprops(glcm_matrixs, 'contrast')
     dissimilarity_matrixs = greycoprops(glcm_matrixs, 'dissimilarity')

@@ -3,6 +3,7 @@ import numpy as np
 from skimage import feature, measure
 from readFile import readSingleFile as rf
 import cv2
+import os
 def image_binary_slice(image):
     [m, n] = np.shape(image)
     binary_image = np.zeros((m, n))
@@ -114,9 +115,24 @@ def registration(image1, image2):
         print 'nc ', (z + 1), ' --> art ', (min_index + 1)
         res.append([z, min_index])
     return res
-art_image_path = 'D:\\MedicalImageAll\\Srr033\\Liver\\Liver_Srr033_ART.mhd'
-nc_image_path = 'D:\\MedicalImageAll\\Srr033\\Liver\\Liver_Srr033_NC.mhd'
-art_image = rf(art_image_path)
-nc_image = rf(nc_image_path)
-print np.shape(nc_image)
-registration(nc_image, art_image)
+def find_nc_art_name(image_path, target = ''):
+    files = os.listdir(image_path)
+    for file in files:
+        if file.endswith('mhd'):
+            if file.find('NC') != -1 and file.find(target) != -1:
+                nc_name = os.path.join(image_path, file)
+            else:
+                if file.find('ART') != -1 and file.find(target) != -1:
+                    art_name = os.path.join(image_path, file)
+    return nc_name, art_name
+def find_nc_index(reflection, target):
+    for i in range(len(reflection)):
+        if reflection[i][1] == target:
+            return reflection[i][0]
+    return -1
+# art_image_path = 'D:\\MedicalImageAll\\Srr033\\Liver\\Liver_Srr033_ART.mhd'
+# nc_image_path = 'D:\\MedicalImageAll\\Srr033\\Liver\\Liver_Srr033_NC.mhd'
+# art_image = rf(art_image_path)
+# nc_image = rf(nc_image_path)
+# print np.shape(nc_image)
+# registration(nc_image, art_image)
